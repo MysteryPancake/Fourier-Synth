@@ -1,10 +1,10 @@
 let canvas;
 let canvasCtx;
 let audioCtx;
-let fundamental = 440;
-let lockView = false;
-let zoom = 400;
-let volume = 0.5;
+let fundamental;
+let lockView;
+let zoom;
+let volume;
 let circleTable;
 const circles = [];
 const trail = [];
@@ -15,6 +15,10 @@ function setup() {
 	circleTable = document.getElementById("circleTable");
 	canvas = document.getElementById("canvas");
 	canvasCtx = canvas.getContext("2d");
+	fundamental = parseFloat(document.getElementById("frequency").value);
+	lockView = document.getElementById("lockX").checked;
+	zoom = parseFloat(document.getElementById("zoom").value);
+	volume = parseFloat(document.getElementById("volume").value);
 	requestFrame(draw);
 }
 
