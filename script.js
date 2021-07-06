@@ -4,7 +4,7 @@ let audioCtx;
 let fundamental = 440;
 let lockView = false;
 let zoom = 400;
-let volume = 1;
+let volume = 0.5;
 let circleTable;
 const circles = [];
 const trail = [];
@@ -29,10 +29,12 @@ function createContext() {
 			let sample = 0;
 			for (let j = 0; j < circles.length; j++) {
 				const circle = circles[j];
-				const actualSpeed = fundamental * circle.speed;
-				sample += Math.cos(circle.phase * actualSpeed) * circle.radius;
+				// Calculate absolute speed from relative speed
+				const absoluteSpeed = fundamental * circle.speed;
+				// Perform additive synthesis
+				sample += Math.cos(circle.phase * absoluteSpeed) * circle.radius;
 				// Modulo 0 or NaN crashes JavaScript
-				circle.phase = (circle.phase + step) % ((PI2 / actualSpeed) || PI2);
+				circle.phase = (circle.phase + step) % ((PI2 / absoluteSpeed) || PI2);
 			}
 			output[i] = sample * volume;
 		}
@@ -46,7 +48,7 @@ function addCircle() {
 	const circle = {
 		radius: 0.1,
 		speed: circles.length % 2 == 0 ? speed : -speed,
-		// Use phase of the first circle if it exists
+		// Use the phase of the first circle if it exists
 		phase: circles.length > 0 ? circles[0].phase : 0
 	};
 	circles.push(circle);
@@ -115,7 +117,7 @@ function draw() {
 		let yPos = canvas.height / 2;
 		for (let i = 0; i < circles.length; i++) {
 			const circle = circles[i];
-			// This angle is much slower than reality
+			// Angle is much slower than reality
 			const angle = degreesToRadians(audioCtx.currentTime * fundamental * circle.speed);
 			const radiusPixels = circle.radius * zoom;
 			// Draw circle
@@ -129,7 +131,7 @@ function draw() {
 			canvasCtx.lineWidth = 4;
 			canvasCtx.beginPath();
 			canvasCtx.moveTo(xPos, yPos);
-			// Based on the circle math from https://wiki.facepunch.com/gmod/surface.DrawPoly
+			// Based on math from https://wiki.facepunch.com/gmod/surface.DrawPoly
 			xPos += Math.sin(angle) * radiusPixels;
 			// Subtracting because the coordinate system is different compared to audio
 			yPos -= Math.cos(angle) * radiusPixels;
@@ -145,7 +147,7 @@ function draw() {
 			canvasCtx.lineTo(xCoord - (trail.length - j), trail[j]);
 		}
 		canvasCtx.stroke();
-		// The trail acts as a lazy circular buffer
+		// Trail acts as a lazy circular buffer
 		if (trail.length > canvas.width) {
 			trail.shift();
 		}
