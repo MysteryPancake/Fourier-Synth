@@ -1,0 +1,29 @@
+* {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+#left {
+	float: left;
+	margin-right: 8px;
+}
+
+#circleTable {
+	display: none;
+}
+
+canvas, table {
+	margin-top: 8px;
+}
+
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+table tr:first-child {
+	font-weight: bold;
+}
+
+th, td {
+	padding: 8px;
+}
